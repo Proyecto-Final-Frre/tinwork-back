@@ -29,7 +29,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-const port = 3000;
+const port = 5000;
 
 app.get("/topic", async (req, res) => {
   const payload = {
@@ -53,16 +53,18 @@ app.post("/", async (req, res) => {
   const title = req.body.title;
   const body = req.body.body;
 
-  const payload = {
-    notification: {
-      title: title,
-      body: body,
-    },
+  const message = {
+    message: {
+      token,
+      notification: {
+        title,
+        body
+      },
+    }
   };
 
   await admin
-    .messaging()
-    .sendToDevice(token, payload)
+    .messaging().send(message.message)
     .then((response) => console.log(response))
     .catch((err) => console.log("err", err));
 
